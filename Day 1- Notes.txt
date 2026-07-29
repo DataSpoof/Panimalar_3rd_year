@@ -1,0 +1,332 @@
+Supervised Machine learning
+
+1- Regression
+2- Classification
+--- Binary classification
+--- Multiclass classification
+--- Multi-label classification
+
+Unsupervised Machine learning
+1- Clustering
+2- Association rules
+---- market basket analysis (which items frequently buy together)
+---- recommendation system
+
+Reinforcement learning
+
+
+-- Chatgpt (rlhf)
+
+-----------------------------------------------------------
+
+1- Data engineer
+-- create a pipeline to clean the data
+----- ETL (Extract, Tranform, load)
+----- ELT (Extract, Load and Transform)
+----- ETLT (Extract transform, load and transform)
+
+-----------------------------------------------
+AWS-- Glue
+Azure-- Data Factory
+GCP-- DataProc
+-------------------------------------------------
+
+
+2- Data analyst
+-- take the clean data
+-- analyze it 
+---------1) Graphical data analysis(univariate, bivariate, multivariate)
+---------2) Statistical data analysis (descriptive, inferntial)
+Descriptive-- Mean, Median, Mode, std, skewness, kurtosis, standardization, Normalization
+
+Inferntial-- 
+-- Null
+-- alternate
+
+----------------------------------------------------------
+T-test (comparison mean of numerical column)
+Chi-square (association between two categorical variables)
+
+KS test, Anova test, F-test, Shapiro wilk test, AB testing,
+
+
+
+
+-- present it in a dashboard format (tableau, powerbi)
+-- story telling
+
+----------------------------Regression-------------------------------
+1- Linear regression
+
+--- Simple linear regression
+
+Price of house=== based on no of bedrooms 
+1 target==== 1 features
+
+y= mx+c
+
+
+--- Multiple linear regression
+
+1 target=== Multiple features
+
+
+y= b0+ b1x1+b2x2..........bnxn + error term
+----------------------------------------------------------------------
+Multicollinearity
+-- high correlation between two variables
+-- bias
+-- to fix this- we drop one of the variables
+
+cardinality
+-- no of unique values in the categorical column
+-- only 1 unique column-- (drop it out)
+-- many categories (drop it out)
+
+-----------------Data science lifecyle------------------------------
+
+1- Domain knowledge
+2- Problem statement
+service based company-- stakeholder will give u the problem
+product based company-- you have to find its on your own 
+
+
+
+3- Proof of concept
+--- problem statement
+--- Architecture of your software (blueprint)
+
+Technical specification
+---- programming language, softare or python libraries
+---- Duration of the project
+
+-- Budget for this project
+
+
+4- service level agreement
+
+--- response time
+--- tools are u using
+--- which customer and how many are u serving 
+
+5- Statement of work
+-- final deliverables
+
+6- Data collection
+
+-- public data (open source data)
+-- private data (properitary data)
+
+Where you can download data
+-- social media ()
+------- Twitter (grok)
+give me last 50 tweets in the previous week from big people geopolicits for the israel and iran war in csv format
+
+------- FB, Insta, Whatsapp (facebook ads manager)
+
+
+
+
+
+
+
+-- internet of things (iot)-- apple watches
+-- from website (kaggle, google dataset search)
+--- survey
+-- web scrapping (scrapping the information from web)
+
+OpenAI (Chatgpt)--- scrap all the data--- created the chatgpt application----- 
+
+
+-------------------------------------------------------------
+
+2- Data Quality checking 
+3- Data cleaning (tabular, text, images,audio, Timeseries)
+4- Exploratory data analysis (graphical and statistical)
+5- Feature engineering (from one column you can derive n no of features)
+6- Feature scaling (Standardization (-1,1), Normalization (0,1))
+7- Data Splitting
+
+
+1)Training- 70% ,Validation- 20%,Testing- 10%
+2) K fold cross validation
+
+8- Algorithm selection
+9- Hyperparametr tunning (grid search cv, randomized search cv, optuna)
+--- selecting the best sets of parameter to get the maximum results
+
+10- Train the model with thier best parameter on training data
+
+11- Evalute the performance on validation and testing data
+
+regression - mean squared error (mse), root mean squared error(rmse), mean absolute error (mae)
+
+classification- precision, recall, f1 score, accuracy, confidence score, calibration curve
+
+clustering- silhouette score, bouldwin index
+
+12- Find the model with the best performance and save it in pickle format or hdfs or h5 format
+
+-- ALso save the training data in the column in the pickle format
+
+
+13- wrap it into api and test it using postman or pytest
+14- deploy it on cloud (web application , mobile application or edge devices)
+
+15- Model monitoring
+----- monitor the performance
+----- monitor the latency (time taken for making a prediction)
+----- tracking the parameters, algorithms, charts 
+
+Tools-- Mlflow, weights and biases, prometheus and grafana
+
+
+
+16- Continous integeration and continous deployment
+---- codepipeline'
+---- github workflows
+---- Azure devops
+
+
+17- model security
+Adversarial machine learnign engineer (cybersecurity)
+
+List of libraries
+
+-- pandas (college level project)--small amounts of data
+-- polars or pyspark-- big data handling
+-- dvc (data version control)
+-- scikit-learn (algorithm implementation, and evaluation)
+-- tensorflow or pytorch (for deep learning algorithms)
+-- fastapi (for api development)
+-- pytest (testing libraries)
+-- mlflow (tracking and monitoring)
+
+
+-- nltk (text data preprocessing)
+-- hugging face (implementing various application of nlp)
+
+-- opencv (for image data)
+-- scikit-image (for image data preprocessing)
+
+-- librosa (for audio data preprocessing)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+2- Data analyst
+-- take the clean data
+-- analyze it
+-- present it in a dashboard format
+-- story telling
+
+3- Machine learning engineer
+-- take data to make the prediction about future
+
+4- Data Scientist
+All the above things
+
+5- AI engineer
+
+
+
+
+
+
+
+
+
+
+
+
