@@ -146,6 +146,7 @@
 - Pytest Fixtures
 - Mock Patching
 - Futures
+- Context manager 
 
 ---
 
