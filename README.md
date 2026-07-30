@@ -1,3 +1,24 @@
+# Interview questions
+
+* R squared can be negative or not
+* multicollinearity
+* difference bertween type 1 and type 2 error
+* * what to minimize fp or fn
+  * Which metrics and why
+
+https://chatgpt.com/share/6a6ae51c-7ffc-83ee-b496-f586c864e489
+
+
+
+
+
+
+
+
+
+
+
+
 # Python Curriculum
 
 ## Module 1: Python Language Fundamentals
