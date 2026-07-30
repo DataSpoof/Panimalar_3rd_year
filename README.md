@@ -2,6 +2,7 @@
 
 * R squared can be negative or not
 * multicollinearity
+* What parameter each algorithm contains
 * difference bertween type 1 and type 2 error
 * * what to minimize fp or fn
   * Which metrics and why
