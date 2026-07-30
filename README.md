@@ -226,16 +226,24 @@ https://chatgpt.com/share/6a6ae51c-7ffc-83ee-b496-f586c864e489
 - Secure Remote Connections
 
 
+
+## Module 14: Mini Project & Assessment
+- Python Assessment
+- Mini Project
+- Final Assessment
+
+
+
 # SQL
 -- ACID
 -- DDL, DML, TCL
 -- Normalization (1st, 2nd, 3rd, 3.5)
 -- Denormalization
 -- Types of schema (star, snowflake, galaxy)
-***-- Nested queries (subqueries)
-***-- Common table expression (with statement)
-***-- Joins (2 table, 3 table, 4 table, 5 table joins)
-***-- windows function (rank, dense rank, row number, lag, lead, first values,
+-- Nested queries (subqueries)
+-- Common table expression (with statement)
+-- Joins (2 table, 3 table, 4 table, 5 table joins)
+-- windows function (rank, dense rank, row number, lag, lead, first values,
 last value)
 -- Database optimization
 -- Use of case when statement
@@ -243,8 +251,3 @@ last value)
 -- stored procedures, security (row level, column level)
 
 ---
-
-## Module 14: Mini Project & Assessment
-- Python Assessment
-- Mini Project
-- Final Assessment
