@@ -1,0 +1,413 @@
+Deep learning
+- data requirement will be high
+- Better AI infrastructure (more GPU are required)
+- H100 GPU (25k to 40k usd)
+- Model explainability will be little bit tough to explain
+- black box (you dont know what internally is it happening)
+
+
+Machine learning
+- data requirement will be compartively low
+- CPU or GPU both are fine for it depending upon data
+- Model explainabilty (giving the reason behind your prediction so that you can trust more) will be easier 
+--------------------------------------------------------------------
+
+Neurons
+- are the trasmitter that send signal from any parts to body to the central nervous system aka brain.
+
+- billions of neurons (more than 70 billion)
+- most of things are inactive state
+
+
+Perceptron
+- Artifical Neurons
+
+Geoffery Hinton------- Father of deep learning or neural network
+
+
+1- Input layer (dendrites)
+2- Hidden layer (nucleus)
+3- Output layer (axon terminal)
+
+task complex-- more hidden layer
+task simple-- less hidden layer
+
+---------------------------------------------------------
+Adrenaline-----Survivor--- do or die-------------
+----------------------------------------------------------
+
+Sigmiod
+-- threshold is 0.5
+-- Anything less than 0.5 will be output as 0
+-- ANything greater than 0.5 will be output as 1
+
+
+Relu
+- use at hidden layer
+- for information processing
+
+Leaky relu
+-- uses when we have to deal with overfitting
+
+
+Softmax
+- two or more than two class problem
+
+ANN is car(classification and regression)
+--------------------------------------------------------------------
+Implementation Architecture of ANN
+
+// Input layer
+
+1- First step is to initialize the neural network with the help of Sequential module.
+-------- number of neurons
+-------- input size (50,)--50 column and all the rows
+
+//hidden layer
+
+2- Second step initialize the hidden layer
+-------- number of neurons (8,16,32,64,128,256,512,1024,2048,4096)
+-------- activation  function (relu or leaky relu)
+-------- regularization algorithm (l1 or l2 regularizer)
+
+------------------ l1 and l2 plays a very important role in feature selection as well as dealing with multicollinearity
+
+2.1 Add the drooput layer
+2.2 Add the batch normalization layer (speed up training process)
+normalization means convert the values in the range of 0 to 1
+
+
+// output layer
+3-- classification problem (no of classes, activation)
+(1, "sigmoid") --- for binary classification problem
+(2,"softmax")--- for binary as well as multiclass
+
+----------------------------------------------------------------
+model.summary()
+
+Total parameters
+Trainable params
+Non trainable params
+
+
+-----------Parameters=(Input units×Output units)+bias-------------
+-------------------------------------------------------------------
+
+4- Model compilation
+
+Define a loss function
+
+Optimizer---- minimize the loss by using the backpropogation techniques
+
+Adam (learning rate), Nadam,
+------- learning rate high--- overfitting
+-------- lr too low---- underfittinng
+lr=0.01
+
+
+loss function
+-- binary cross entropy (0,1)
+-- categorical cross entropy (output is one hot encoded format)
+
+  blue    orange   pink
+  1          0     0
+  0          1      0
+  0          0      1
+
+-- sparse categroical cross entropy (blue, orange, pink (label encoded))
+
+Category
+- blue
+- orange
+- ping
+
+metrics
+-- classifcati9n (accuracy)
+-- regressiin (mean squared errror ,rmse)
+
+---------------------------------------------------------------------------
+Train the model
+-- Training data
+-- validation data
+-- no of epochs (gpu-- higher epochs, cpu-- lower epochs)
+-- batch size
+-- early stoppping (you acheive the goal before time)
+
+you acheive the desired performance before complete all the epochs
+
+for example
+-- no of epochs is 100
+-- desired performance is 95%
+
+At the 50 epochs i have reaches 95%
+-----------------------------------------------------------------
+Case 2- performance is not improving 
+
+let us say at epochs 40 i have acheived 70%  after that my performance is not improving i will wait for min_patience_level=10. i will go upto 50 check it out if is not impoorving stop the training.
+
+
+----------------------------------------------------------------------
+
+checkpointer
+--- saving after every n epochs like a milestione
+
+restore_best_weights
+--- you go for 10 epochs pick the one which is having the highest
+
+class_weight
+--- used for the data imbalance
+
+Step size training=5
+Step size validation =5
+
+----------------------------------------------------------------------------
+save the trained model in the h5 format  h5 format or .keras format
+-------------------------
+evaluate the trained model on the test set
+----------------------------
+classification-- precision, recall, f1 score, accuracy, roc auc, calibration curve
+regression- mean squared error, rmse, mape, mean absolute error 
+
+----------------------------------
+
+Hyperparameter tunning
+-- no of neurons, no of hidden layer, test out other activation fuction, no of epochs, batch size
+
+Savae the model in tensorflow lite format
+
+Quantization 
+- Qunatizagtion Aware Training
+
+cut down the model size so that we can deploy our mdoel on android application, ios or edge devices
+
+wrap the model in API and test it using postman and deploy the endpoints on cloud like AWS, azure or gcp
+---------------------------Deployment in details-----------------------------------
+1- Create a virtual private cloud (VPC)
+2- Create subnets
+---- Public subnet (Anyone can connect with internet)
+---- Private subnet(only employees can coneect----- NAT Gateway)
+
+2.1---- Create availablity zones (if one region goes down other wil be up and active)
+
+3- craeat ec2 (virtual machine like windows or linux) machines within the subnet 
+
+4- You use AMazon sagemaker to write all your codes and deploy the endpoints
+
+5- Create the endpoints using API gateway
+
+Python
+OpenAI codex
+vscode
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
