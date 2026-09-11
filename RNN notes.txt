@@ -1,0 +1,288 @@
+
+Recurrent Neural Network-- vanilaa rnn
+--- Human brain have memory
+--- Memory helps u to store  past conversations
+
+Input layer
+Memory layer
+Output layer
+
+Ashwin born in tamil nadu............................................ so he speak tamil frequently.
+
+Gap between the relevant words and predicted word is small
+The bird fly in sky.
+
+if relevant words and the predicted word gap is too big---- RNN fails
+
+Long Short term memory (LSTM)
+-----------------------------------------------------------------------------------
+Input layer
+Memory layer--- which will remember important things
+forget gate later-- if value is 0--- we remember everything dont drop
+------------if values is between 0 to 1- 0.2(20% information we will forget)
+1 means---- (100% information we will forget)
+
+candidate layer 
+-- how much is the urgency based on that i will remember or forget the conversations.
+
+output layer
+
+-----------------------------------------------------------------------------------
+Bidirectional lstm
+-- it traverse in both the direction
+-- from left to right as well as right to left
+-- in order to understand the meaning in a better manner
+
+Problem
+-- not applicable for language translation application
+-------------------------------------------------------------------------------
+Gated recurrent unit (GRU)--special types of lstm
+- it focus on important words in the conversation without worrying about irrelevant things....
+-----------------------------------------------------------------------------------
+
+Encoder Decoder
+-- it is applicable for language translation
+
+          John likes to play cricket
+Encoded---1    2      3  4     5
+Processing layer--- process the encoded information and translate
+         --- john ko cricket khelna pasand hai--- this message will be decrypted format
+
+Decoder layer--- it will decrypt your output
+output---- john ko cricket khelna pasand hai
+
+
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------
+Attention mechanism
+-- give higher weightage to important words 
+
+
+John likes to play cricket
+-- cricket, like has more importance
+
+-------- Attention is all you need
+--------------- Google team 2017
+
+
+- they have proposed transformer architecture
+- it has two component encoder and decoder
+- 6 encoder and 6 decoder
+
+Encoder (bert- bidirectional representational transformer)
+decoder (GPT)-- generatve pretrained transformer
+
+
+
+
+
+High level overview of Transformer
+
+John plays football
+
+Positional encoding--- transformer does not see the word in sequence. it sees the words in a jumbled manner
+
+In order to make words in the sequence we use positional encoding
+
+- encoder
+------ Attention mechanism
+------ feed forward neural network is connected to other other encoder
+
+- decoder
+------ Multihead attention mechanism
+
+Addition and normalization layer
+- it will through all the ways and find the best ones
+
+output
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Transformer Architecture in much more detailed manner
+
+1- We have the sentence 
+
+---------Thinking Machine 
+Transformer see the word in jumbled manner (machine thinking)
+
+Jumbled Words + Positional Encoding=== Right Seqeuence
+
+2- We will embed our right words
+
+Thinking- [0.1,0.2,0.3]
+Machine- [0.4,0.5,0.6]
+
+It is representeed in matrix format  called as X
+
+
+-----------------------------------------------------------------------
+
+so for each word we will be going to created query vector, key vector and value vector
+
+query-- what i am looking for
+
+key- what information does each words contains (represent each words and help determine which words are relevant)
+
+value- what actual information should i take from that words
+
+Next step is to assume the weeights of query (wq), key (wk), value vector (wv)
+
+
+------------------------------------------------------------------------
+
+Calcualte query =  X (input matrix)  * Wq (weight of query matrix)
+Calcualte key =  X (input matrix)  * Wk (weight of key matrix)
+Calcualte value =  X (input matrix)  * Wv (weight of value matrix)
+
+------------------------------------------------------------------------
+compute attention score
+                    Take the transpose of key matrix (kt)
+ 
+
+attention score= Query matrix (Q) * Kt (transpose of key matrix)
+---------------------------------------------------------------------------
+Applying the softmax to get the attention weights matrix
+
+compute weighted sum of values
+output = Attention weights matrix * value matrix
+------------------------------------------------------------------------------
+
+After this feed forward neural network process the information from the previous layer and pass it out the next encoder.
+AFter encoder it is pass to decoder--- multihead attentionn--ffnn--add and norma layer--- output
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

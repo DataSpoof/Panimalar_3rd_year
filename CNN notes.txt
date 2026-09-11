@@ -1,0 +1,371 @@
+CNN
+- convolutional neural network
+- thinks of it like as eye in human body
+
+Application
+- Image classification
+
+Types of CNN
+
+CNN 1d (1 dimensional)
+- Applicable for Tabular data only, audio classification
+- Classification as Regression (CAR)
+
+CNN 2d
+- Applicable for image classification
+
+CNN 3d
+- 3d types of images
+- MRI
+
+-------------------------------------------CNN 2D----------------------------------
+Images
+- are made up of pixels
+- pixels values range from 0 to 255
+
+Types of images
+- grayscale images also known as black and white (1 channel)
+- coloured images (3 channel RGB)
+
+
+
+---------------------------------Architecture of CNN------------------------------
+
+1- convolutional layer
+
+Input image * kernel = CONVOLVED Feature MAP
+
+Image--- jpg, png, jpeg,
+
+Kernel aka filters scans the images and detect the important portions of image
+--- KERNEL_SIZE=== (3,3) (6,6) (9,9)
+
+
+2- Hidden layer
+
+parameter
+-No of neurons
+-pooling size
+-l1 and l2 regularizer
+-Activation function
+
+2.1- Dropout layer (optional)
+2.2- Pooling layer-- reduce teh parameter and computation happening in the network. keeps the important feature
+
+
+Types of pooling (2*2) (4*4) (6*6)
+- min 
+- max
+- average pooling
+
+
+Convolved feature map * pooling layer=== pooled feature map
+
+3- Batch normalization layer
+
+4- Fully connected layer
+
+Output pooled feature map 
+-- flattening is applied to make it 1dimension
+-- 1 dimensional thing given as input to the fully connected layer
+-- so that it can learn all the spatial combination of features
+
+5- output layer
+-- no of classes
+-- activation function- sigmoid or sofmtax
+
+1, sigmoid
+2-n, softmax
+------------------------------------------------------------------
+
+compile it
+
+train it--- save it in h5 format or keras format
+
+evaluate it on test set
+
+model explainability
+
+Hyperparameter tunning (optional)
+
+wrap it in the api
+
+Test using postman
+
+Deploy the API and expose it to web services
+-----------------------------------Mobilde deploument---------------------
+Qunatization
+save it tensorflow lite converted
+tflite will be used for creating the android application
+Image data generator (we use it when we less amount of data present)
+- it will create multiple version of image
+- rotation
+- cropping
+- brighness
+- flipping
+- zooming
+- scaling
+
+Albumentation is python library for image data generations
+
+
+
+
+1- Download the dataset and upload it to google driver
+
+2- Specify the location using %cd
+
+3- Import all the required libraries
+
+4- now you have to load the image dataset
+
+
+
+
+IMG_SIZE = 224
+
+# ===================== CUSTOM PREPROCESS FUNCTION =====================
+def preprocess_image(img):
+    img = img.astype(np.uint8)
+
+    # 1. CLAHE (normalization)
+    lab = cv2.cvtColor(img, cv2.COLOR_RGB2LAB)
+    l, a, b = cv2.split(lab)
+    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
+    l = clahe.apply(l)
+    lab = cv2.merge((l,a,b))
+    img = cv2.cvtColor(lab, cv2.COLOR_LAB2RGB)
+
+    # 2. Bilateral Filter
+    img = cv2.bilateralFilter(img, 9, 75, 75)
+
+    # 3. Sharpen
+    kernel = np.array([[0,-1,0],[-1,5,-1],[0,-1,0]])
+    img = cv2.filter2D(img, -1, kernel)
+
+    # 4. Edge Detection
+    gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+    edges = cv2.Canny(gray, 100, 200)
+    edges = np.expand_dims(edges, axis=-1)
+
+    # 5. Normalize RGB
+    img = img / 255.0
+    edges = edges / 255.0
+
+
+    return img
+
+# ===================== DATA GENERATORS =====================
+train_datagen = ImageDataGenerator(
+    preprocessing_function=preprocess_image,
+    rotation_range=15,
+    zoom_range=0.2,
+    brightness_range=[0.7,1.3],
+    horizontal_flip=True
+)
+
+
+
+# flow_from_directory--- read the dataset from folder
+# flow_from_dataframe-- reading the image from csv file
+train_gen = train_datagen.flow_from_directory(
+    train_path,
+    target_size=(224,224),
+    batch_size=16,
+    color_mode='rgb',
+    shuffle=True, # in the training data you have to do the shuffling
+    seed=42, # freeze the result
+    class_mode='categorical') # binary # sparse
+
+
+
+val_datagen = ImageDataGenerator(preprocessing_function=preprocess_image)
+
+val_gen = val_datagen.flow_from_directory(
+    val_path,
+    target_size=(224,224),
+    batch_size=16,
+    color_mode='rgb',
+    shuffle=False, # no shuffling in validation or testing time
+    class_mode='categorical')
+
+
+------------------------------------------------------------------------------
+Transfer learning
+- transfer the knowledge from a bigger model to the smaller model
+
+Step 1- pick a bigger model which is trained on millions of images 
+(Imagenet database--contains millions of image along with mulicple classes 52 classes)
+
+1- VGG (Visual Geometry group) -- VGG16, VGG19 (224,224)
+2- Residual Network (ResNET)-- Resnet150
+---Interview QA-- Explain resnet architecture and what is skip connections
+3- Efficient net
+4- MobileNet (for mobile application)
+5- AlexNet
+6- NASNET
+
+
+# Steps for doing any image classification project
+
+1- Download the dataset and upload it to google driver
+
+2- Specify the location using %cd
+
+3- Import all the required libraries
+
+4- Load the dataset
+
+5- Do the basic exploration like no of images in the folder, plot few images, plot pixel density distributionn of the image
+
+5.1- data preprocessing (clahe, bilateral filter,edge detection, image normalization, removing hairs from the images, clean the blurred images, contour detection)
+
+6- Perform Data Augmentation if we have less than no of images in training (Image data generator fn)
+
+Optional step- If data is imbalanced make it balance (undersampling, oversampling, class_weight_calculation)
+
+6.1- we have defined the focal loss (to focus on difficult images rather than simple ones)
+
+7- Define your CNN model or transfer learning model
+
+8- Compile the model using Adam optimizer (learning rate), loss (categorical, binary, sparse), focal loss----- metrics (accuracy for image classification).
+
+9- Fit the model with training and validation data and run for n number of epochs and specify the batch size, checkpointer, early stopping (min patieence level), save the logs in tensorboard.
+
+10- Once training done Save the weights and create training and loss plot
+
+11- Evaluate the trained model on the test data using metrics like accuracy, precision, recall, f1 score, roc auc, calibration plot.
+
+Note-- f1 score is used when the dataset is imbalanced
+Note-- the goal is to maximize the recall it means minimize the false negative
+
+
+
+
+12- Copy paste all the code into chatgpt to create an end to end application using streamlit framework (web application), fastapi (write your api)
+
+13- create a file names app.py and paste all the code.
+
+Note in the same folder store your h5 weights files also
+
+14- Before that create virtual environment and install all the necessary libraries using uv
+
+* pip install uv
+* uv venv
+* .venv\Scripts\activate
+* Create a file called as requirements.txt file and mention all the libraries.
+* uv pip install -r requirements.txt
+* python -m streamlit run app.py
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Connect the google drive to google colab
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Note-- Padding means adding 0s pixels to your existing images so that each image will be equal
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
