@@ -1,0 +1,1267 @@
+# Enterprise RAG Application
+
+## End-to-End Architecture, Implementation & Evaluation Plan
+
+---
+
+## 1. Problem Statement & Proof of Concept (POC)
+
+### 1.1 Problem Statement
+
+Clearly define the business problem that the RAG application needs to solve.
+
+The problem statement should answer:
+
+* What business problem are we solving?
+* Who are the end users?
+* What type of documents/data will be used?
+* What questions should the system answer?
+* What information should the system retrieve?
+* What are the expected accuracy, latency, security, and cost requirements?
+
+### 1.2 Proof of Concept
+
+Before building the complete production system, develop a POC to validate:
+
+* Data ingestion
+* Document parsing
+* Chunking strategy
+* Embedding generation
+* Vector database
+* Retrieval quality
+* LLM response quality
+* Hallucination levels
+* End-to-end latency
+* Estimated cost
+
+The POC should help determine whether the proposed architecture is technically and economically feasible.
+
+---
+
+# 2. Service Level Agreement (SLA) & Technology Selection
+
+Define the expected service-level requirements before selecting the technology stack.
+
+### 2.1 SLA Requirements
+
+Important SLA parameters include:
+
+* Response latency
+* Availability
+* Throughput
+* Accuracy
+* Maximum acceptable error rate
+* Security requirements
+* Data privacy requirements
+* Recovery Time Objective (RTO)
+* Recovery Point Objective (RPO)
+* Maximum token usage
+* Cost per request
+
+Example:
+
+| Metric             |      Target |
+| ------------------ | ----------: |
+| Availability       |       99.9% |
+| Response latency   | < 5 seconds |
+| Retrieval latency  |    < 500 ms |
+| Hallucination rate |        < 2% |
+| Retrieval Recall@K |       > 90% |
+| API error rate     |        < 1% |
+
+---
+
+## 2.2 LLM Provider Selection
+
+Select the appropriate LLM provider based on:
+
+* Accuracy
+* Context-window size
+* Latency
+* Cost
+* Enterprise security
+* Data privacy
+* Availability
+* Tool/function-calling capabilities
+* Multimodal capabilities
+
+Possible providers:
+
+* OpenAI
+* Anthropic Claude
+* Google Gemini
+* AWS Bedrock-hosted models
+* Azure-hosted models
+
+---
+
+## 2.3 Embedding Model Selection
+
+The embedding model should generally align with the selected architecture rather than necessarily being from the same vendor as the LLM.
+
+Examples:
+
+* OpenAI → OpenAI embedding models
+* Cohere → Cohere embedding models
+* Google → Google embedding models
+* Open-source → BGE, E5, etc.
+
+Evaluate:
+
+* Embedding quality
+* Dimensionality
+* Latency
+* Cost
+* Multilingual capability
+* Domain-specific performance
+
+---
+
+## 2.4 Vector Database Selection
+
+Possible vector databases:
+
+* Pinecone
+* Weaviate
+* ChromaDB
+* FAISS
+* pgvector
+* Milvus
+
+### Cost-Optimization Alternative
+
+For organizations already using PostgreSQL, **pgvector** can be considered to reduce infrastructure complexity and cost.
+
+---
+
+## 2.5 RAG Framework Selection
+
+Select the framework used to build the RAG pipeline.
+
+Possible options:
+
+* LangChain
+* LlamaIndex
+* Custom Python implementation
+
+The selection should consider:
+
+* Ecosystem
+* Integration capabilities
+* Maintainability
+* Observability
+* Production maturity
+* Developer expertise
+
+---
+
+## 2.6 Cloud Platform Selection
+
+Select the cloud platform based on enterprise requirements.
+
+### AWS
+
+Potential services:
+
+* S3
+* Lambda
+* API Gateway
+* Bedrock
+* EC2
+* ECS/EKS
+* CloudWatch
+* SNS
+* VPC
+* Route 53
+* Application Load Balancer
+* WAF
+* CodePipeline
+
+### Azure
+
+Potential services:
+
+* Azure Functions
+* Azure Blob Storage
+* Azure AI Foundry
+* Azure OpenAI
+* Azure DevOps
+* Azure Monitor
+* Application Gateway
+* Key Vault
+
+### Google Cloud
+
+Potential services:
+
+* Cloud Storage
+* Cloud Run
+* Vertex AI
+* BigQuery
+* Cloud Functions
+* GKE
+* Cloud Monitoring
+
+---
+
+# 3. Data Collection & Data Engineering Pipeline
+
+The RAG system is only as good as the quality of the data provided to it.
+
+The data pipeline may follow:
+
+**Data Sources → Ingestion → Transformation → Validation → Cleaning → Storage**
+
+---
+
+## 3.1 ETL
+
+**Extract → Transform → Load**
+
+Data is transformed before being loaded into the target system.
+
+---
+
+## 3.2 ELT
+
+**Extract → Load → Transform**
+
+Raw data is first loaded into the storage/warehouse and transformation happens afterward.
+
+---
+
+## 3.3 ETLT
+
+**Extract → Transform → Load → Transform**
+
+Useful when some preprocessing needs to happen before loading, followed by additional transformation downstream.
+
+---
+
+# 4. Data Transformation & Quality
+
+Before creating embeddings, perform data preprocessing and quality checks.
+
+### Data Quality Checks
+
+Check for:
+
+* Missing values
+* Duplicate documents
+* Corrupted files
+* Incorrect formats
+* Encoding problems
+* Invalid metadata
+* Outdated documents
+* Incorrect document versions
+* Personally Identifiable Information (PII)
+
+### Data Preprocessing
+
+Depending on the data type:
+
+* Text cleaning
+* OCR
+* HTML removal
+* Header/footer removal
+* Table extraction
+* Metadata extraction
+* Language detection
+* Document normalization
+
+For large-scale processing, **Apache Spark / PySpark** can be used.
+
+---
+
+# 5. Document Processing & Output Format
+
+After preprocessing, documents should be converted into a structured representation.
+
+Possible formats:
+
+* JSON
+* Markdown
+* Plain text
+* Structured document objects
+* TOON (Token-Oriented Object Notation), where appropriate for token-efficient LLM workflows
+
+Example conceptual structure:
+
+```text
+Document
+ ├── document_id
+ ├── title
+ ├── source
+ ├── created_date
+ ├── department
+ ├── access_level
+ └── content
+```
+
+Metadata is particularly important for enterprise retrieval.
+
+---
+
+# 6. Chunking Strategy
+
+Large documents cannot normally be embedded as one giant piece of text.
+
+Therefore, documents are divided into smaller chunks.
+
+### 6.1 Fixed-Size Chunking
+
+Split documents based on a fixed number of tokens or characters.
+
+Example:
+
+```text
+Chunk size = 500 tokens
+Overlap = 50 tokens
+```
+
+Simple and fast, but may break semantic context.
+
+---
+
+### 6.2 Recursive Chunking
+
+Recursively split documents using logical separators such as:
+
+```text
+Document
+ → Section
+   → Paragraph
+     → Sentence
+```
+
+This is often a strong general-purpose strategy.
+
+---
+
+### 6.3 Semantic Chunking
+
+Chunks are created based on semantic similarity rather than simply using a fixed size.
+
+Advantages:
+
+* Better contextual coherence
+* Useful for complex documents
+
+---
+
+### 6.4 Graph-Based Chunking
+
+Documents are represented through relationships between entities, concepts, or sections.
+
+Useful for:
+
+* Knowledge graphs
+* Complex relationships
+* Enterprise knowledge bases
+* Highly interconnected information
+
+---
+
+# 7. Embedding Generation
+
+Once documents are chunked:
+
+**Document → Chunks → Embedding Model → Vector Representations**
+
+Each chunk is converted into a numerical vector.
+
+Example:
+
+```text
+"Amazon S3 provides object storage"
+             ↓
+       Embedding Model
+             ↓
+[0.021, -0.331, 0.721, ...]
+```
+
+The embeddings are stored together with the original chunk and metadata.
+
+---
+
+# 8. Vector Database
+
+Store:
+
+* Chunk ID
+* Original text
+* Embedding vector
+* Document ID
+* Source
+* Timestamp
+* Department
+* Access permissions
+* Other metadata
+
+Example:
+
+```text
+Vector Database
+
+Chunk
+ ├── Text
+ ├── Embedding
+ ├── Document ID
+ ├── Department
+ ├── Access Level
+ └── Timestamp
+```
+
+---
+
+# 9. User Query
+
+The user submits a question.
+
+Example:
+
+> "What is our company's refund policy for enterprise customers?"
+
+The query then passes through the security and retrieval pipeline.
+
+---
+
+# 10. Input Guardrails & PII Protection
+
+Before processing the query, apply input security controls.
+
+### Input Guardrails
+
+Detect:
+
+* Prompt injection
+* Jailbreak attempts
+* Malicious instructions
+* Off-topic requests
+* Unsafe content
+* System prompt extraction attempts
+
+### PII Detection & Masking
+
+Detect and potentially mask:
+
+* Names
+* Email addresses
+* Phone numbers
+* Addresses
+* Financial information
+* Government identifiers
+* Other sensitive information
+
+Example:
+
+```text
+Original:
+"My email is abhishek@example.com"
+
+Masked:
+"My email is [EMAIL]"
+```
+
+---
+
+# 11. Retrieval Layer
+
+The system now searches the knowledge base for relevant information.
+
+There are several retrieval strategies.
+
+---
+
+## 11.1 Keyword-Based Retrieval
+
+Traditional information retrieval techniques include:
+
+* TF-IDF
+* BM25
+* Inverted Index
+
+These methods are particularly useful when exact keywords matter.
+
+---
+
+## 11.2 Semantic Retrieval
+
+The user's query is converted into an embedding.
+
+The system then searches for vectors that are semantically similar.
+
+Common similarity techniques include:
+
+* Cosine similarity
+* Dot product
+* Euclidean distance
+
+Semantic retrieval focuses on **meaning rather than exact keywords**.
+
+Example:
+
+Query:
+
+> "How much money can I get back?"
+
+Document:
+
+> "Customers are eligible for a full refund within 30 days."
+
+Although the words are different, semantic retrieval can identify the relationship.
+
+---
+
+# 12. Hybrid Retrieval
+
+Hybrid retrieval combines:
+
+**Keyword Search + Semantic Search**
+
+For example:
+
+```text
+BM25
+   +
+Dense Vector Search
+   ↓
+Combined Results
+```
+
+This provides the advantages of both approaches.
+
+### Why Hybrid Retrieval?
+
+Keyword retrieval is good at:
+
+* Exact terms
+* Product names
+* IDs
+* Technical terminology
+
+Semantic retrieval is good at:
+
+* Meaning
+* Natural-language questions
+* Conceptual similarity
+
+Hybrid retrieval is therefore commonly used in production RAG systems.
+
+---
+
+# 13. Metadata Filtering
+
+Before or during retrieval, metadata can be used to restrict the search space.
+
+Example:
+
+```text
+Department = Finance
+Document Type = Policy
+Year = 2026
+Access Level = Employee
+```
+
+This prevents the system from retrieving irrelevant or unauthorized documents.
+
+For enterprise applications, metadata filtering is also an important component of **security and access control**.
+
+---
+
+# 14. Reranking
+
+The initial retrieval stage may return many candidate chunks.
+
+A reranker evaluates these candidates and determines which ones are most relevant to the user's query.
+
+```text
+Query
+  ↓
+Initial Retrieval
+  ↓
+Top 20 Documents
+  ↓
+Reranker
+  ↓
+Top 5 Relevant Documents
+  ↓
+LLM
+```
+
+Reranking can significantly improve final retrieval relevance, especially when the initial search returns many similar documents.
+
+---
+
+# 15. Enterprise Retrieval Architecture
+
+A strong enterprise retrieval architecture can therefore be:
+
+**Metadata Filtering + Hybrid Retrieval + Reranking**
+
+```text
+User Query
+    ↓
+Input Guardrails
+    ↓
+PII Detection
+    ↓
+Metadata Filtering
+    ↓
+Hybrid Retrieval
+(BM25 + Vector Search)
+    ↓
+Candidate Documents
+    ↓
+Reranker
+    ↓
+Top-K Relevant Chunks
+    ↓
+LLM
+```
+
+---
+
+# 16. Prompt Construction & Context Injection
+
+The retrieved documents are provided to the LLM as context.
+
+Conceptually:
+
+```text
+System Instructions
+        +
+User Query
+        +
+Retrieved Context
+        ↓
+       LLM
+        ↓
+Generated Answer
+```
+
+The prompt should instruct the LLM to:
+
+* Use retrieved information
+* Avoid unsupported claims
+* Cite sources where required
+* Say "I don't know" when information is unavailable
+* Follow enterprise policies
+
+---
+
+# 17. Post-Processing
+
+After the LLM generates an answer, perform post-processing.
+
+Possible operations:
+
+* Citation generation
+* Response formatting
+* PII filtering
+* Toxicity filtering
+* Schema validation
+* JSON validation
+* Removing unsupported content
+* Adding source references
+* Applying business rules
+
+The output can then be returned in the required format.
+
+---
+
+# 18. Final Response
+
+The user receives the final answer.
+
+Example:
+
+```text
+User
+ ↓
+RAG Pipeline
+ ↓
+Retrieved Evidence
+ ↓
+LLM Generation
+ ↓
+Post-Processing
+ ↓
+Final Answer + Citations
+```
+
+---
+
+# 19. RAG Evaluation
+
+A production RAG system must be continuously evaluated.
+
+Evaluation should happen at multiple levels.
+
+---
+
+## 19.1 Retrieval Evaluation
+
+Measure how effectively the system retrieves relevant documents.
+
+Important metrics:
+
+* Precision@K
+* Recall@K
+* MRR
+* NDCG@K
+* Hit Rate
+
+---
+
+## 19.2 LLM Evaluation
+
+Evaluate the quality of the generated response.
+
+Important metrics include:
+
+* Correctness
+* Relevance
+* Coherence
+* Faithfulness
+* Groundedness
+* Hallucination rate
+* Toxicity
+* Citation correctness
+* Citation completeness
+
+---
+
+## 19.3 System-Level Evaluation
+
+Evaluate the complete application rather than just the LLM.
+
+Questions to evaluate:
+
+* Does the system meet business requirements?
+* Does it retrieve the correct information?
+* Does the LLM generate the correct answer?
+* Is the answer grounded in retrieved documents?
+* Is the response sufficiently fast?
+* Is the system cost-effective?
+* Is the application secure?
+
+---
+
+# 20. LLM-as-a-Judge
+
+An LLM can be used as an evaluator to assess generated responses.
+
+Example:
+
+```text
+User Question
+      ↓
+RAG System
+      ↓
+Generated Answer
+      ↓
+LLM Judge
+      ↓
+Evaluation
+```
+
+The judge can evaluate:
+
+* Relevance
+* Correctness
+* Groundedness
+* Faithfulness
+* Completeness
+* Citation quality
+
+This can be combined with human evaluation and automated metrics.
+
+> Important: LLM-as-a-Judge should not be treated as absolute ground truth. It should be validated against human-labeled evaluation data.
+
+---
+
+# 21. Corrective RAG
+
+A corrective RAG architecture can use evaluation signals to determine whether the retrieved information is sufficient.
+
+Conceptually:
+
+```text
+Query
+ ↓
+Retrieve
+ ↓
+Evaluate Retrieved Documents
+ ↓
+Relevant?
+ ├── YES → Generate Answer
+ └── NO  → Additional Retrieval / Search
+```
+
+This can help reduce hallucinations caused by poor retrieval.
+
+---
+
+# 22. RAG Testing
+
+Before deploying the application, create a test dataset.
+
+Example:
+
+```text
+Question
+Expected Answer
+Expected Source
+Relevant Chunks
+Expected Citation
+```
+
+Test individual components independently.
+
+### Unit Testing
+
+Test:
+
+* Document parser
+* Chunking
+* Embedding generation
+* Metadata extraction
+* Retrieval
+* Reranking
+* Prompt construction
+* Output parser
+
+### Integration Testing
+
+Test:
+
+```text
+Document
+ ↓
+Ingestion
+ ↓
+Chunking
+ ↓
+Embedding
+ ↓
+Vector DB
+ ↓
+Retrieval
+ ↓
+Reranking
+ ↓
+LLM
+ ↓
+Final Response
+```
+
+### Regression Testing
+
+Whenever the model, prompt, embedding model, chunking strategy, or retrieval algorithm changes, rerun the evaluation dataset.
+
+---
+
+# 23. API Development
+
+Expose the RAG application through an API.
+
+### FastAPI
+
+FastAPI can be used to build REST APIs such as:
+
+```text
+POST /query
+POST /documents
+GET  /health
+GET  /metrics
+```
+
+Example architecture:
+
+```text
+Client
+  ↓
+API Gateway
+  ↓
+FastAPI
+  ↓
+RAG Application
+```
+
+---
+
+# 24. AWS Production Architecture
+
+A possible AWS architecture:
+
+```text
+                    Users
+                      ↓
+                    Route 53
+                      ↓
+                     WAF
+                      ↓
+               Load Balancer
+                      ↓
+                FastAPI / ECS
+                      ↓
+        ┌─────────────┼─────────────┐
+        ↓             ↓             ↓
+       S3          Vector DB      Bedrock
+        ↓             ↓             ↓
+   Documents      Retrieval        LLM
+        ↓             ↓             ↓
+     ETL/ETL     Reranking      Generation
+        └─────────────┼─────────────┘
+                      ↓
+                  CloudWatch
+                      ↓
+              Monitoring/Alerts
+```
+
+Other AWS services can be introduced depending on requirements:
+
+* Lambda
+* API Gateway
+* EC2
+* ECS/EKS
+* SNS
+* VPC
+* CodePipeline
+* Secrets Manager
+* IAM
+* CloudWatch
+
+---
+
+# 25. Azure Production Architecture
+
+A possible Azure architecture:
+
+```text
+Users
+  ↓
+Application Gateway / WAF
+  ↓
+Azure Function / Container
+  ↓
+RAG Application
+  ↓
+Azure AI Foundry / Azure OpenAI
+  ↓
+Vector Database
+  ↓
+Azure Blob Storage
+```
+
+Supporting services:
+
+* Azure DevOps
+* Azure Monitor
+* Key Vault
+* Application Insights
+* Azure Storage
+
+---
+
+# 26. Monitoring & Observability
+
+Production RAG applications require continuous monitoring.
+
+Monitoring should cover:
+
+### 26.1 Retrieval Metrics
+
+* Precision@K
+* Recall@K
+* NDCG@K
+* MRR
+* Hit Rate
+
+---
+
+### 26.2 Chunk Quality Monitoring
+
+Monitor:
+
+* Chunk size
+* Chunk overlap
+* Empty chunks
+* Duplicate chunks
+* Chunk relevance
+* Context completeness
+
+---
+
+### 26.3 Embedding Monitoring
+
+Monitor:
+
+* Embedding latency
+* Embedding failures
+* Embedding distribution
+* Embedding drift
+* Changes in embedding quality
+
+---
+
+### 26.4 Vector Database Monitoring
+
+Monitor:
+
+* Query latency
+* Search failures
+* Index health
+* Storage utilization
+* Number of vectors
+* Query throughput
+* Database availability
+
+---
+
+### 26.5 LLM Response Monitoring
+
+Monitor:
+
+* Hallucination
+* Groundedness
+* Toxicity
+* Relevance
+* Response correctness
+* Citation correctness
+* Citation completeness
+
+---
+
+### 26.6 Latency Monitoring
+
+Break total latency into individual components:
+
+```text
+Total Latency
+     =
+Embedding Latency
++
+Retrieval Latency
++
+Reranking Latency
++
+LLM Inference Latency
++
+Post-Processing Latency
+```
+
+This makes it easier to identify performance bottlenecks.
+
+---
+
+### 26.7 Token Monitoring
+
+Track:
+
+* Input tokens
+* Output tokens
+* Total tokens
+* Tokens per request
+* Tokens per user
+* Tokens per application
+* Context-window utilization
+
+---
+
+### 26.8 Cost Monitoring
+
+Track:
+
+* LLM cost
+* Embedding cost
+* Vector database cost
+* Compute cost
+* Storage cost
+* API costs
+* Cost per query
+* Cost per user
+* Monthly infrastructure cost
+
+---
+
+### 26.9 Security Monitoring
+
+Monitor for:
+
+* Prompt injection
+* Jailbreak attempts
+* PII leakage
+* Sensitive-data exposure
+* Unauthorized document access
+* Malicious queries
+* Abnormal user behavior
+
+---
+
+### 26.10 User Feedback Monitoring
+
+Capture explicit and implicit feedback.
+
+Examples:
+
+* 👍 Thumbs Up
+* 👎 Thumbs Down
+* User comments
+* Response regeneration
+* Query abandonment
+* Escalation to human support
+
+User feedback can then become part of the continuous improvement loop.
+
+---
+
+# 27. Complete Enterprise RAG Lifecycle
+
+The complete architecture can be summarized as:
+
+```text
+1. Problem Statement
+        ↓
+2. POC
+        ↓
+3. SLA & Technology Selection
+        ↓
+4. Data Collection
+        ↓
+5. ETL / ELT / ETLT
+        ↓
+6. Data Quality & Preprocessing
+        ↓
+7. Document Parsing
+        ↓
+8. Chunking
+        ↓
+9. Embedding Generation
+        ↓
+10. Vector Database
+        ↓
+11. User Query
+        ↓
+12. Input Guardrails + PII Masking
+        ↓
+13. Metadata Filtering
+        ↓
+14. Hybrid Retrieval
+        ↓
+15. Reranking
+        ↓
+16. Prompt Construction
+        ↓
+17. LLM Generation
+        ↓
+18. Post-Processing
+        ↓
+19. Final Answer + Citations
+        ↓
+20. Evaluation
+        ↓
+21. Testing
+        ↓
+22. API Deployment
+        ↓
+23. Monitoring & Observability
+        ↓
+24. Continuous Improvement
+```
+
+# 28. Continuous Improvement Loop
+
+A production RAG system should not be considered a one-time implementation.
+
+The system should continuously follow:
+
+```text
+Production Usage
+      ↓
+User Feedback
+      ↓
+Monitoring
+      ↓
+Evaluation
+      ↓
+Identify Failure
+      ↓
+Improve Chunking / Retrieval / Prompt / Model
+      ↓
+Regression Testing
+      ↓
+Deployment
+      ↓
+Production
+```
+
+This creates a continuous **RAG evaluation → improvement → deployment** lifecycle.
+
+---
+
+# Final Enterprise RAG Architecture
+
+```text
+                    ┌──────────────────┐
+                    │      USERS       │
+                    └────────┬─────────┘
+                             ↓
+                    ┌──────────────────┐
+                    │  API / Gateway   │
+                    └────────┬─────────┘
+                             ↓
+                    ┌──────────────────┐
+                    │ Input Guardrails │
+                    │   + PII Masking  │
+                    └────────┬─────────┘
+                             ↓
+                    ┌──────────────────┐
+                    │  Query Processing│
+                    └────────┬─────────┘
+                             ↓
+                 ┌─────────────────────────┐
+                 │    Metadata Filtering   │
+                 └────────────┬────────────┘
+                              ↓
+                 ┌─────────────────────────┐
+                 │     Hybrid Retrieval    │
+                 │   BM25 + Vector Search  │
+                 └────────────┬────────────┘
+                              ↓
+                 ┌─────────────────────────┐
+                 │        Reranker         │
+                 └────────────┬────────────┘
+                              ↓
+                 ┌─────────────────────────┐
+                 │   Context Construction  │
+                 └────────────┬────────────┘
+                              ↓
+                 ┌─────────────────────────┐
+                 │          LLM            │
+                 └────────────┬────────────┘
+                              ↓
+                 ┌─────────────────────────┐
+                 │    Post-Processing      │
+                 │ + Validation + Citation │
+                 └────────────┬────────────┘
+                              ↓
+                    ┌──────────────────┐
+                    │  FINAL RESPONSE  │
+                    └──────────────────┘
+
+
+        ┌──────────────────────────────────────────┐
+        │       MONITORING & OBSERVABILITY         │
+        │                                          │
+        │ Retrieval │ Embeddings │ Vector DB       │
+        │ LLM       │ Latency    │ Tokens          │
+        │ Cost      │ Security   │ User Feedback   │
+        └──────────────────────────────────────────┘
+```
+
+**The key enterprise principle is:**
+**Good RAG ≠ just LLM + Vector Database.**
+
+A production-grade RAG system combines **high-quality data + appropriate chunking + hybrid retrieval + metadata filtering + reranking + guardrails + evaluation + observability + security + cost optimization**.
